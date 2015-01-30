@@ -42,8 +42,6 @@ class sqlwebapp (
   $iis_site    = 'Default Web Site',
   $file_source = 'http://master.inf.puppetlabs.demo',
 ) {
-  include profile::windows::sql
-  include profile::windows::iisdb
   file { "${docroot}/CloudShop":
     ensure  => directory,
     require => Class['profile::windows::iisdb'],
@@ -52,14 +50,12 @@ class sqlwebapp (
     target  => $sqldatadir,
     creates => "${sqldatadir}/AdventureWorks2012_Data.mdf",
     source  => "${file_source}/AdventureWorks2012_Data.zip",
-    require => Class['profile::windows::sql'],
     notify  => Exec['SetupDB'],
   }
   staging::deploy { "CloudShop.zip":
     target  => "${docroot}/CloudShop",
     creates => "${docroot}/CloudShop/packages.config",
     source  => "${file_source}/CloudShop.zip",
-    require => File["${docroot}/CloudShop"],
     notify  => Exec['ConvertAPP'],
   }
   file { "${docroot}/CloudShop/Web.config":
