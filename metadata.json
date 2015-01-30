@@ -1,0 +1,17 @@
+{
+  "name": "velocity303-sqlwebapp",
+  "version": "0.1.0",
+  "author": "velocity303",
+  "summary": "A module to install a webapp using IIS based upon the guide found here: http://blogs.technet.com/b/keithmayer/archive/2012/12/18/step-by-step-build-virtual-machines-in-the-cloud-with-windows-azure.aspx",
+  "license": "Apache 2.0",
+  "source": "https://github.com/velocity303/puppet-sqlwebapp",
+  "project_page": "https://github.com/velocity303/puppet-sqlwebapp",
+  "issues_url": "https://github.com/velocity303/puppet-sqlwebapp/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_range": ">= 1.0.0"
+    }
+  ]
+}
+
