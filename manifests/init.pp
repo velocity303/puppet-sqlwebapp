@@ -36,7 +36,7 @@
 # Copyright 2015 Your name here, unless otherwise noted.
 #
 class sqlwebapp (
-  $sqldatadir  = 'C:/Program Files/Microsoft SQL Server/MSSQL12.MYINSTANCE/MSSQL/DATA/',
+  $sqldatadir  = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA',
   $docroot     = 'C:/inetpub/wwwroot',
   $db_instance = 'MYINSTANCE',
   $iis_site    = 'Default Web Site',
@@ -44,7 +44,6 @@ class sqlwebapp (
 ) {
   file { "${docroot}/CloudShop":
     ensure  => directory,
-    require => Class['profile::windows::iisdb'],
   }
   staging::deploy { "AdventureWorks2012_Data.zip":
     target  => $sqldatadir,
@@ -74,7 +73,7 @@ class sqlwebapp (
     logoutput   => true,
   }
   exec { 'ConvertAPP':
-    command     => "ConvertTo-WebApplication \"IIS:\Sites\${iis_site}\CloudShop\"",
+    command     => "ConvertTo-WebApplication \'IIS:/Sites/${iis_site}/CloudShop\'",
     provider    => powershell,
     refreshonly => true,
   }
