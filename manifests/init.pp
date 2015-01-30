@@ -40,6 +40,7 @@ class sqlwebapp (
   $docroot     = 'C:/inetpub/wwwroot',
   $db_instance = 'MYINSTANCE',
   $iis_site    = 'Default Web Site',
+  $file_source = 'http://master.inf.puppetlabs.demo',
 ) {
   include profile::windows::sql
   include profile::windows::iisdb
@@ -50,28 +51,28 @@ class sqlwebapp (
   staging::deploy { "AdventureWorks2012_Data.zip":
     target  => $sqldatadir,
     creates => "${sqldatadir}/AdventureWorks2012_Data.mdf",
-    source  => "http://master.inf.puppetlabs.demo/AdventureWorks2012_Data.zip",
+    source  => "${file_source}/AdventureWorks2012_Data.zip",
     require => Class['profile::windows::sql'],
     notify  => Exec['SetupDB'],
   }
   staging::deploy { "CloudShop.zip":
     target  => "${docroot}/CloudShop",
     creates => "${docroot}/CloudShop/packages.config",
-    source  => "http://master.inf.puppetlabs.demo/CloudShop.zip",
+    source  => "${file_source}/CloudShop.zip",
     require => File["${docroot}/CloudShop"],
     notify  => Exec['ConvertAPP'],
   }
   file { "${docroot}/CloudShop/Web.config":
     ensure  => present,
-    content => template('profile/Web.config.erb'),
+    content => template('sqlwebapp/Web.config.erb'),
     require => Staging::Deploy['CloudShop.zip'],
   }
   file { 'C:/AttachDatabasesConfig.xml':
     ensure  => present,
-    content => template('profile/AttachDatabasesConfig.xml.erb'),
+    content => template('sqlwebapp/AttachDatabasesConfig.xml.erb'),
   }
   exec { 'SetupDB':
-    command     => template('profile/AttachDatabase.ps1'),
+    command     => template('sqlwebapp/AttachDatabase.ps1'),
     provider    => powershell,
     refreshonly => true,
     logoutput   => true,
