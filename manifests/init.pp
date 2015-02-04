@@ -42,6 +42,7 @@ class sqlwebapp (
   $iis_site    = 'Default Web Site',
   $file_source = 'http://master.inf.puppetlabs.demo',
 ) {
+  require tse_sqlserver
   file { "${docroot}/CloudShop":
     ensure  => directory,
   }
