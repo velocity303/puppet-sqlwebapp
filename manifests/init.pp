@@ -42,9 +42,9 @@ class sqlwebapp (
   $iis_site    = 'Default Web Site',
   $file_source = 'http://master.inf.puppetlabs.demo',
 ) {
-  require tse_sqlserver
   file { "${docroot}/CloudShop":
     ensure  => directory,
+    require => Class['tse_sqlserver::iisdb'],
   }
   staging::deploy { "AdventureWorks2012_Data.zip":
     target  => $sqldatadir,
@@ -56,6 +56,7 @@ class sqlwebapp (
     target  => "${docroot}/CloudShop",
     creates => "${docroot}/CloudShop/packages.config",
     source  => "${file_source}/CloudShop.zip",
+    require => File["${docroot}/CloudShop"],
     notify  => Exec['ConvertAPP'],
   }
   file { "${docroot}/CloudShop/Web.config":
