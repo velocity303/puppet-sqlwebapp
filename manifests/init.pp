@@ -36,49 +36,35 @@
 # Copyright 2015 Your name here, unless otherwise noted.
 #
 class sqlwebapp (
-  $sqldatadir  = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA',
-  $docroot     = 'C:/inetpub/wwwroot',
-  $db_instance = 'MYINSTANCE',
-  $iis_site    = 'Default Web Site',
-  $file_source = 'http://master.inf.puppetlabs.demo',
+  $sqldatadir    = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA',
+  $docroot       = 'C:/inetpub/wwwroot',
+  $db_instance   = 'MYINSTANCE',
+  $iis_site      = 'Default Web Site',
+  $file_source   = 'http://master.inf.puppetlabs.demo',
+  $db_password   = 'Azure$123',
+  $webapp_zip    = 'CloudShop.zip',
+  $webapp_name   = 'CloudShop',
+  $webapp_config = 'Web.config',
 ) {
-  file { "${docroot}/CloudShop":
+  file { "${docroot}/${webapp_name}":
     ensure  => directory,
+    require => Class['tse_sqlserver::iisdb'],
   }
-  staging::deploy { "AdventureWorks2012_Data.zip":
-    target  => $sqldatadir,
-    creates => "${sqldatadir}/AdventureWorks2012_Data.mdf",
-    source  => "${file_source}/AdventureWorks2012_Data.zip",
-    notify  => Exec['SetupDB'],
-  }
-  staging::deploy { "CloudShop.zip":
-    target  => "${docroot}/CloudShop",
-    creates => "${docroot}/CloudShop/packages.config",
-    source  => "${file_source}/CloudShop.zip",
+  staging::deploy { $webapp_zip:
+    target  => "${docroot}/${webapp_name}",
+    creates => "${docroot}/${webapp_name}/${webapp_config}",
+    source  => "${file_source}/${webapp_zip}",
+    require => File["${docroot}/${webapp_name}"],
     notify  => Exec['ConvertAPP'],
   }
-  file { "${docroot}/CloudShop/Web.config":
+  file { "${docroot}/${webapp_name}/${webapp_config}":
     ensure  => present,
-    content => template('sqlwebapp/Web.config.erb'),
-    require => Staging::Deploy['CloudShop.zip'],
-  }
-  file { 'C:/AttachDatabasesConfig.xml':
-    ensure  => present,
-    content => template('sqlwebapp/AttachDatabasesConfig.xml.erb'),
-  }
-  exec { 'SetupDB':
-    command     => template('sqlwebapp/AttachDatabase.ps1'),
-    provider    => powershell,
-    refreshonly => true,
-    logoutput   => true,
+    content => template("${module_name}/Web.config.erb"),
+    require => Staging::Deploy[$webapp_zip],
   }
   exec { 'ConvertAPP':
-    command     => "ConvertTo-WebApplication \'IIS:/Sites/${iis_site}/CloudShop\'",
+    command     => "ConvertTo-WebApplication \'IIS:/Sites/${iis_site}/${webapp_name}\'",
     provider    => powershell,
     refreshonly => true,
   }
-  sqlserver::login{'CloudShop':
-     instance => $db_instance,
-     password => 'Azure$123',
-  }  
 }
