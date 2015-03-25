@@ -9,20 +9,22 @@ class sqlwebapp (
   $webapp_name   = 'CloudShop',
   $webapp_config = 'Web.config',
 ) {
-  require sqlwebapp::iis
+  contain sqlwebapp::iis
   file { "${docroot}/${webapp_name}":
     ensure  => directory,
+    require => Class['sqlwebapp::iis'],
   }
-  file { "${docroot}/${webapp_zip}":
-    ensure => present,
-    source => "${file_source}/${webapp_zip}",
+  file { "C:/${webapp_zip}":
+    ensure  => present,
+    source  => "${file_source}/${webapp_zip}",
+    require => File["${docroot}/${webapp_name}"],
   }
   unzip { "Unzip webapp ${webapp_zip}":
-    source      => "${path}/${zip_file}",
+    source      => "C:/${webapp_zip}",
     creates     => "${docroot}/${webapp_name}/${webapp_config}",
     destination => "${docroot}/${webapp_name}",
-    require     => File["${docroot}/${webapp_zip}"],
-    notify      => Exec['ConvertApp'],
+    require     => File["C:/${webapp_zip}"],
+    notify      => Exec['ConvertAPP'],
   }
   file { "${docroot}/${webapp_name}/${webapp_config}":
     ensure  => present,
