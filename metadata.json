@@ -11,6 +11,10 @@
     {
       "name": "puppetlabs-stdlib",
       "version_range": ">= 1.0.0"
+    },
+    {
+      "name": "reidmv-unzip",
+      "version_range": ">=0.1.2"
     }
   ]
 }
