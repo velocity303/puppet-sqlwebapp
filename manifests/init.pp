@@ -1,9 +1,10 @@
 class sqlwebapp (
   $sqldatadir    = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA',
   $docroot       = 'C:/inetpub/wwwroot',
+  $dbserver      = $::fqdn,
   $db_instance   = 'MYINSTANCE',
   $iis_site      = 'Default Web Site',
-  $file_source   = 'puppet:///modules/sqlwebapp/',
+  $file_source   = 'https://s3-us-west-2.amazonaws.com/tseteam/files/sqlwebapp',
   $db_password   = 'Azure$123',
   $webapp_zip    = 'CloudShop.zip',
   $webapp_name   = 'CloudShop',
@@ -13,12 +14,11 @@ class sqlwebapp (
   file { "${docroot}/${webapp_name}":
     ensure  => directory,
   }
-  file { "${docroot}/${webapp_zip}":
-    ensure => present,
+  staging::file { $webapp_zip:
     source => "${file_source}/${webapp_zip}",
   }
   unzip { "Unzip webapp ${webapp_zip}":
-    source      => "${path}/${zip_file}",
+    source      => "${::staging::path}/${module_name}/${zip_file}",
     creates     => "${docroot}/${webapp_name}/${webapp_config}",
     destination => "${docroot}/${webapp_name}",
     require     => File["${docroot}/${webapp_zip}"],
