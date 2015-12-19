@@ -18,11 +18,11 @@ class sqlwebapp (
     source => "${file_source}/${webapp_zip}",
   }
   unzip { "Unzip webapp ${webapp_zip}":
-    source      => "${::staging::path}/${module_name}/${webapp_zip}",
+    source      => "C:/staging/${module_name}/${webapp_zip}",
     creates     => "${docroot}/${webapp_name}/${webapp_config}",
     destination => "${docroot}/${webapp_name}",
-    require     => File["${docroot}/${webapp_zip}"],
-    notify      => Exec['ConvertApp'],
+    require     => Staging::File[$webapp_zip],
+    notify      => Exec['ConvertAPP'],
   }
   file { "${docroot}/${webapp_name}/${webapp_config}":
     ensure  => present,
