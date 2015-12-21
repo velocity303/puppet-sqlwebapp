@@ -40,4 +40,5 @@ class sqlwebapp::iis {
       'Web-Windows-Auth',
     ]
   }
+  dotnet { 'dotnet35-iis': version => '3.5' }
 }
