@@ -1,36 +1,33 @@
 class sqlwebapp (
-  $sqldatadir    = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA',
-  $docroot       = 'C:/inetpub/wwwroot',
   $dbserver      = $::fqdn,
-  $db_instance   = 'MYINSTANCE',
+  $dbinstance    = 'MYINSTANCE',
+  $dbpass        = 'Azure$123',
+  $dbuser        = 'CloudShop',
   $iis_site      = 'Default Web Site',
+  $docroot       = 'C:/inetpub/wwwroot',
   $file_source   = 'https://s3-us-west-2.amazonaws.com/tseteam/files/sqlwebapp',
-  $db_password   = 'Azure$123',
-  $webapp_zip    = 'CloudShop.zip',
-  $webapp_name   = 'CloudShop',
-  $webapp_config = 'Web.config',
 ) {
   require sqlwebapp::iis
-  file { "${docroot}/${webapp_name}":
+  file { "${docroot}/CloudShop":
     ensure  => directory,
   }
-  staging::file { $webapp_zip:
-    source => "${file_source}/${webapp_zip}",
+  staging::file { 'CloudShop.zip':
+    source => "${file_source}/CloudShop.zip",
   }
-  unzip { "Unzip webapp ${webapp_zip}":
-    source      => "C:/staging/${module_name}/${webapp_zip}",
-    creates     => "${docroot}/${webapp_name}/${webapp_config}",
-    destination => "${docroot}/${webapp_name}",
-    require     => Staging::File[$webapp_zip],
+  unzip { "Unzip webapp CloudShop":
+    source      => "C:/staging/${module_name}/CloudShop.zip",
+    creates     => "${docroot}/CloudShop/Web.config",
+    destination => "${docroot}/CloudShop",
+    require     => Staging::File['CloudShop.zip'],
     notify      => Exec['ConvertAPP'],
   }
-  file { "${docroot}/${webapp_name}/${webapp_config}":
+  file { "${docroot}/CloudShop/Web.config":
     ensure  => present,
     content => template("${module_name}/Web.config.erb"),
-    require => Unzip["Unzip webapp ${webapp_zip}"],
+    require => Unzip["Unzip webapp CloudShop"],
   }
   exec { 'ConvertAPP':
-    command     => "ConvertTo-WebApplication \'IIS:/Sites/${iis_site}/${webapp_name}\'",
+    command     => "ConvertTo-WebApplication \'IIS:/Sites/${iis_site}/CloudShop\'",
     provider    => powershell,
     refreshonly => true,
   }
