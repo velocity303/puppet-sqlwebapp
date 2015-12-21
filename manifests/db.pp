@@ -10,6 +10,6 @@ class sqlwebapp::db (
     file_source => $file_source,
     dbinstance  => $dbinstance,
     dbpass      => $dbpass,
-    dbuser      => $dbuser,
+    owner       => $dbuser,
   }
 }
