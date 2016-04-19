@@ -34,6 +34,7 @@ class sqlwebapp (
   }
   file { "${docroot}/CloudShop/newrelic.config":
     ensure  => present,
+    source  => 'C:\ProgramData\New Relic\.NET Agent\newrelic.config',
     require => Class['newrelic::agent::dotnet'],
     notify  => Exec['refresh_iis'],
   }
