@@ -3,7 +3,7 @@ class sqlwebapp (
   $dbinstance    = 'MYINSTANCE',
   $dbpass        = 'Azure$123',
   $dbuser        = 'CloudShop',
-  $dbname	 = 'AdventureWorks2012',
+  $dbname        = 'AdventureWorks2012',
   $iis_site      = 'Default Web Site',
   $docroot       = 'C:/inetpub/wwwroot',
   $file_source   = 'https://s3-us-west-2.amazonaws.com/tseteam/files/sqlwebapp',
@@ -32,4 +32,14 @@ class sqlwebapp (
     provider    => powershell,
     refreshonly => true,
   }
+  file { "${docroot}/CloudShop/newrelic.config":
+    ensure  => present,
+    require => Class['newrelic::agent::dotnet'],
+    notify  => Exec['refresh_iis'],
+  }
+  exec { 'refresh_iis':
+    command     => 'C:\windows\system32\iisreset.exe',
+    refreshonly => true,
+  }
+  
 }
