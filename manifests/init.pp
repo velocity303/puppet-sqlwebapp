@@ -40,7 +40,7 @@ class sqlwebapp (
   }
   exec { 'refresh_iis':
     command     => 'C:\windows\system32\iisreset.exe',
+    require     => Windowsfeature['IIS_APPSERVER'],
     refreshonly => true,
   }
-  
 }
