@@ -1,8 +1,8 @@
-# This class is used to setup IIS with ASP.Net support for Windows
+# this class is used to setup IIS with ASP.Net support for Windows
 # Server 2012. This will be useful for apps connecting to a database.
 class sqlwebapp::iis {
-  windowsfeature { 'IIS_APPSERVER':
-    feature_name => [
+
+  $iis_features = [
       'Web-Server',
       'Net-Framework-45-ASPNET',
       'Application-Server',
@@ -39,5 +39,8 @@ class sqlwebapp::iis {
       'Web-Url-Auth',
       'Web-Windows-Auth',
     ]
+
+  windowsfeature { $iis_features:
+    ensure => present,
   }
 }
