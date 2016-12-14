@@ -16,7 +16,7 @@ class sqlwebapp (
     source => "${file_source}/CloudShop.zip",
   }
   unzip { "Unzip webapp CloudShop":
-    source      => "${::staging_windir}/staging/${module_name}/CloudShop.zip",
+    source      => "${::staging_windir}/${module_name}/CloudShop.zip",
     creates     => "${docroot}/CloudShop/Web.config",
     destination => "${docroot}/CloudShop",
     require     => Staging::File['CloudShop.zip'],
