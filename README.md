@@ -1,6 +1,6 @@
 ##sqlwebapp
 
-This module is intended to be used in tangent with the tse_sqlserver module (https://github.com/velocity303/tse_sqlserver). This is a sample profile showing the deployment of a small IIS webapp that requires interraction with MS SQL Server for functinoality.
+This module is intended to be used in tangent with the tse_sqlserver module (https://github.com/puppetlabs/tse-module-tse_sqlserver). This is a sample profile showing the deployment of a small IIS webapp that requires interraction with MS SQL Server for functinoality.
 
 There are three main components of this module:
 

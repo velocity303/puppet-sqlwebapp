@@ -20,12 +20,12 @@ class sqlwebapp (
     creates     => "${docroot}/CloudShop/Web.config",
     destination => "${docroot}/CloudShop",
     require     => Staging::File['CloudShop.zip'],
-    notify      => Exec['ConvertAPP'],
   }
   file { "${docroot}/CloudShop/Web.config":
     ensure  => present,
     content => template("${module_name}/Web.config.erb"),
     require => Unzip["Unzip webapp CloudShop"],
+    notify  => Exec['ConvertAPP'],
   }
   exec { 'ConvertAPP':
     command     => "ConvertTo-WebApplication \'IIS:/Sites/${iis_site}/CloudShop\'",
